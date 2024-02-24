@@ -1,5 +1,7 @@
 const productModel = require("../models/productModel");
 const ErrorHandler = require("../utils/errorhandler");
+const mongoose=require("mongoose")
+const catchAsyncError = require("../middleware/catchAsyncError");
 
 // get all products
 exports.getAllProduct = async (req, res) => {
@@ -12,23 +14,18 @@ exports.getAllProduct = async (req, res) => {
 };
 
 // get Info of product
-exports.getProductInfo = async (req, res,next) => {
-  try {
-    const productId = req.params.id;
-    const isValidObjectId = mongoose.Types.ObjectId.isValid(productId);
 
-if (!isValidObjectId) {
-  return next(new ErrorHandler("Invalid Product ID", 400));
-}
-    const isProductExist = await productModel.findById(productId);
-    if (!isProductExist) {
-     return next(new ErrorHandler("Product Not Found",404));
-    }
-    res.status(200).json({ success: true, message: isProductExist });
-  } catch (error) {
-    console.log(error);
+exports.getProductInfo = catchAsyncError(async (req, res, next) => {
+  const productId = req.params.id;
+
+  const isProductExist = await productModel.findById(productId);
+
+  if (!isProductExist) {
+      return next(new ErrorHandler("Product Not Found", 404));
   }
-};
+
+  res.status(200).json({ success: true, message: isProductExist });
+});
 
 // ---Admin---
 exports.createProduct = async (req, res) => {
