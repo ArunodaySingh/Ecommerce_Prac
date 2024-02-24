@@ -9,7 +9,7 @@ exports.getAllProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-};
+};i
 
 // get Info of product
 exports.getProductInfo = async (req, res,next) => {
