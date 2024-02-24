@@ -1,7 +1,5 @@
 module.exports = thisSync = (req, res, next) => {
-    try {
-        next();
-    } catch (error) {
-        next(error);
-    }
+    Promise.resolve(thisSync(req,res,next)).catch(next);
 }
+
+// didn't get above line

@@ -9,12 +9,17 @@ exports.getAllProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-};i
+};
 
 // get Info of product
 exports.getProductInfo = async (req, res,next) => {
   try {
     const productId = req.params.id;
+    const isValidObjectId = mongoose.Types.ObjectId.isValid(productId);
+
+if (!isValidObjectId) {
+  return next(new ErrorHandler("Invalid Product ID", 400));
+}
     const isProductExist = await productModel.findById(productId);
     if (!isProductExist) {
      return next(new ErrorHandler("Product Not Found",404));
